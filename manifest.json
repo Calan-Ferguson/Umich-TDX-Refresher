@@ -1,0 +1,16 @@
+{
+    "name": "UMich TeamDynamix Desktop Refresher",
+    "version": "0.0.0.1",
+    "description": "This is a minimum viable product designed to refresh UMich TDX's Desktop (not other TDX tabs) every 5 minutes and on page load.",
+    "content_scripts": [
+        {
+            "matches": ["https://teamdynamix.umich.edu/TDNext/Home/Desktop/Default.aspx"],
+            "js": ["content.js", "jquery-3.5.1.slim.js"],
+            "run_at": "document_end"
+        }
+    ],
+    "icons": {
+        "32": "michigan32.png"
+    },
+    "manifest_version": 2
+}
