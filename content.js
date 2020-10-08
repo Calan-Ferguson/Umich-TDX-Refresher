@@ -2,6 +2,7 @@ var iframe;
 var elmnt;
 var countdown = 5 * 6;
 var countdown = 10 * 1000; //5*60*100;
+var set_event_listeners_on_start_was_called = false;
 //these are the IDs of every TDX tabs the technician could potentially have open
 var first_degree_iframe_ids = ["appDesktop", "ai_62", "appDownloads", "assetai_32", "assetai_33", "ai_31", "appMyWork", "addPeople"]
 
@@ -86,43 +87,94 @@ function refresh_addPeople_Tab() {
     console.log("refreshed People desktop data");
 }
 
+//only call this once.  FIXME: add event listeners for opening and closing the tabs
+function set_event_listeners_on_start(){
+    if (set_event_listeners_on_start_was_called){
+        console.log("ERROR: set_event_listeners_on_start has already been called and should only be called once")
+    }else{
+        set_event_listeners_on_start = true;
+        //eventlisteners for items in the dropdown menu to activate the decision booleans
+        document.querySelectorAll('[title="This is a common ticketing application that can be used to transfer tickets from one ticketing application to another. TDX Technicians across the University of Michigan all have access to this hub."]')[0].parentNode.addEventListener("click", function () {
+            console.log("TDX Hub add button clicked");
+            ai_62_timer_on = true;
+        });
+        //note: cannot grab by title for downloads because the title tag isnt set so we are grabbing theTDX Hub "a tag" and getting the next sibling
+        document.querySelectorAll('[title="This is a common ticketing application that can be used to transfer tickets from one ticketing application to another. TDX Technicians across the University of Michigan all have access to this hub."]')[0].parentNode.nextSibling.addEventListener("click", function () {
+            console.log("Downloads add button clicked");
+            appDownloads_timer_on = true;
+        });
+        document.querySelectorAll('[title="The Assets/CIs application allows users to easily add and categorize assets, configuration items, vendors, contracts, and locations, allowing an organization to track and maintain hardware and software assets, in addition to other configuration items, cost-effectively. - ITS End User Computing"]')[0].parentNode.addEventListener("click", function () {
+            console.log("ITS EUC Assets/CIs add button clicked");
+            assetai_32_timer_on = true;
+        });
+        document.querySelectorAll('[title="The Assets/CIs application allows users to easily add and categorize assets, configuration items, vendors, contracts, and locations, allowing an organization to track and maintain hardware and software assets, in addition to other configuration items, cost-effectively. - ITS Infrastructure"]')[0].parentNode.addEventListener("click", function () {
+            console.log("ITS INF Assets/CIs add button clicked");
+            assetai_33_timer_on = true;
+        });
+        document.querySelectorAll('[title="Tickets is a comprehensive ITSM application that allows users to track and manage tickets for help desk support or just tracking small pieces of work."]')[0].parentNode.addEventListener("click", function () {
+            console.log("Tickets add button clicked");
+            ai_31_timer_on = true;
+        });
+        document.querySelectorAll('[title="The My Work application gives TDNext users a unified view of their assigned tickets, tasks, approvals and other work items."]')[0].parentNode.addEventListener("click", function () {
+            console.log("My Work add button clicked");
+            appMyWork_timer_on = true;
+        });
+        document.querySelectorAll('[title="The People application allows users to search, create, and modify People and Account/Department records in TDNext."]')[0].parentNode.addEventListener("click", function () {
+            console.log("People add button clicked");
+            addPeople_timer_on = true;
+        });
+
+
+
+
+
+        //event listeners for tabs already in the header
+        var tabs_in_header = document.querySelectorAll('[role="tab"]');
+        console.log("hello");
+        var i;
+        for(i = 0; i < tabs_in_header.length; i++){
+            //console.log(tabs_in_header[i]);
+            var tab_text = tabs_in_header[i].children[0].text;
+            if(tab_text == ">TDX Hub"){
+                console.log("TDX tab is active");
+                ai_62_timer_on = true
+            }
+            else if(tab_text == ""){
+                console.log("Downloads tab is active");
+                appDownloads_timer_on = true;
+            }
+            else if(tab_text == "ITS EUC Assets/CIs"){
+                console.log("ITS EUC Assets/CIs tab is active");
+                assetai_32_timer_on = true
+            }
+            else if(tab_text == "ITS INF Assets/CIs"){
+                console.log("ITS INF Assets/CIs tab is active");
+                assetai_33_timer_on = true;
+            }
+            else if(tab_text == "ITS Tickets"){
+                console.log("ITS Tickets tab is active");
+                ai_31_timer_on = true;
+            }
+            else if(tab_text == "My Work"){
+                console.log("My Work tab is active");
+                appMyWork_timer_on = true;
+            }
+            else if(tab_text == "People"){
+                console.log("People tab is active");
+                addPeople_timer_on = true;
+            }
+            //console.log(tab_text);
+        }
+
+    }
+}
+
 // DESKTOP(desktop): sets autorefresh timer and refreshes on webapp load, sets listeners
 window.addEventListener("load", function load(event) {
 
-    //eventlisteners for items in the dropdown menu to activate the decision booleans
-    document.querySelectorAll('[title="This is a common ticketing application that can be used to transfer tickets from one ticketing application to another. TDX Technicians across the University of Michigan all have access to this hub."]')[0].parentNode.addEventListener("click", function () {
-        console.log("TDX Hub add button clicked");
-        ai_62_timer_on = true;
-    });
-    //note: cannot grab by title for downloads because the title tag isnt set so we are grabbing theTDX Hub "a tag" and getting the next sibling
-    document.querySelectorAll('[title="This is a common ticketing application that can be used to transfer tickets from one ticketing application to another. TDX Technicians across the University of Michigan all have access to this hub."]')[0].parentNode.nextSibling.addEventListener("click", function () {
-        console.log("Downloads add button clicked");
-        appDownloads_timer_on = true;
-    });
-    document.querySelectorAll('[title="The Assets/CIs application allows users to easily add and categorize assets, configuration items, vendors, contracts, and locations, allowing an organization to track and maintain hardware and software assets, in addition to other configuration items, cost-effectively. - ITS End User Computing"]')[0].parentNode.addEventListener("click", function () {
-        console.log("ITS EUC Assets/CIs add button clicked");
-        assetai_32_timer_on = true;
-    });
-    document.querySelectorAll('[title="The Assets/CIs application allows users to easily add and categorize assets, configuration items, vendors, contracts, and locations, allowing an organization to track and maintain hardware and software assets, in addition to other configuration items, cost-effectively. - ITS Infrastructure"]')[0].parentNode.addEventListener("click", function () {
-        console.log("ITS INF Assets/CIs add button clicked");
-        assetai_33_timer_on = true;
-    });
-    document.querySelectorAll('[title="Tickets is a comprehensive ITSM application that allows users to track and manage tickets for help desk support or just tracking small pieces of work."]')[0].parentNode.addEventListener("click", function () {
-        console.log("Tickets add button clicked");
-        ai_31_timer_on = true;
-    });
-    document.querySelectorAll('[title="The My Work application gives TDNext users a unified view of their assigned tickets, tasks, approvals and other work items."]')[0].parentNode.addEventListener("click", function () {
-        console.log("My Work add button clicked");
-        appMyWork_timer_on = true;
-    });
-    document.querySelectorAll('[title="The People application allows users to search, create, and modify People and Account/Department records in TDNext."]')[0].parentNode.addEventListener("click", function () {
-        console.log("People add button clicked");
-        addPeople_timer_on = true;
-    });
 
-
-
-
+    set_event_listeners_on_start();
+    set_event_listeners_on_start_was_called = true;
 
 
     //on webapp load
@@ -199,5 +251,7 @@ window.addEventListener("load", function load(event) {
     }, countdown);
 
 }, false);
+
+
 
 
