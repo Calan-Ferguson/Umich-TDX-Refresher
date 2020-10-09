@@ -124,7 +124,7 @@ function user_clicked_tab_in_header(){
 
 
 function user_closed_tab_in_header(){
-
+    count_of_tabs_open--;
     console.log("close");
     console.log(this);
 
@@ -349,9 +349,5 @@ window.addEventListener("load", function load(event) {
     }, countdown);
 
 }, false);
-
-
-
-
 
 
